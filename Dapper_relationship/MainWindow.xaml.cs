@@ -106,8 +106,8 @@ namespace Dapper_relationship
 
                 string query = @"SELECT p.[Id], p.Price, a.[Id], a.[Name], a.[SurName], b.[Id], b.[Name]
                                  FROM Prices p
-                                 JOIN Author a ON a.Id = p.Author
-                                 JOIN Book b ON b.Id = p.Book";
+                                 JOIN Author a ON a.Id = p.AuthorId
+                                 JOIN Book b ON b.Id = p.BookId";
 
                 Dictionary<int, Prices> priceDictionary = new Dictionary<int, Prices>();
 
@@ -118,13 +118,13 @@ namespace Dapper_relationship
                         if (!priceDictionary.TryGetValue(price.Id, out p))
                         {
                             p = price;
-                            p.Author = new List<Author>();
-                            p.Book = new List<Book>();
+                            p.AuthorId = new List<Author>();
+                            p.BookId = new List<Book>();
                             priceDictionary.Add(p.Id, p);
                         }
 
-                        p.Author.Add(author);
-                        p.Book.Add(book);
+                        p.AuthorId.Add(author);
+                        p.BookId.Add(book);
 
                         return p;
                     });

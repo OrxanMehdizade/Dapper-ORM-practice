@@ -15,13 +15,15 @@
 
 --CREATE TABLE Prices(
 --[Id] int PRIMARY KEY IDENTITY(1, 1),
---Author int REFERENCES Author(Id),
---Book int REFERENCES Book(Id),
+--AuthorId int REFERENCES Author(Id),
+--BookId int REFERENCES Book(Id),
 --Price money NOT NULL CHECK(Price>=0)
+--UNIQUE(AuthorId),
+--UNIQUE(BookId)
 --)
 
 
---INSERT INTO Author([Name],[SurName])
+--INSERT INTO Author
 --VALUES(N'Aleksandr', N'Matrosov'),
 --(N'Alexey ', N'Arkhangelsky'),
 --(N'Boris ', N'Carpov'),
@@ -32,7 +34,7 @@
 --( N'Ludmila', N'Omelchenko'),
 --( N'Mark ', N'Braun')
 
---INSERT INTO Book([Name])
+--INSERT INTO Book
 --VALUES (N'SQL'),
 --       (N'Delphi'),
 --       (N'Vnutrennie voiska Kavkazskii krest 2'),
