@@ -29,6 +29,7 @@ namespace Dapper_relationship
             InitializeComponent();
 
             var cs = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Dapper_relationship;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=True;";
+
             #region One to One  
 
             //using (var conn = new SqlConnection(cs))
@@ -102,39 +103,27 @@ namespace Dapper_relationship
             #region Many to many
             using (var conn = new SqlConnection(cs))
             {
-                
+                string query = @"SELECT p.[Id], p.Price, a.[Id] AS AuthorId, a.[Name], a.[SurName], b.[Id] AS BookId, b.[Name]
+                     FROM Prices p
+                     JOIN Author a ON a.Id = p.AuthorId
+                     JOIN Book b ON b.Id = p.BookId";
 
-                string query = @"SELECT p.[Id], p.Price, a.[Id], a.[Name], a.[SurName], b.[Id], b.[Name]
-                                 FROM Prices p
-                                 JOIN Author a ON a.Id = p.AuthorId
-                                 JOIN Book b ON b.Id = p.BookId";
-
-                Dictionary<int, Prices> priceDictionary = new Dictionary<int, Prices>();
-
-                var result =conn.Query<Prices, Author, Book, Prices>(query,
+                var result = conn.Query<Prices, Author, Book, Prices>(query,
                     (price, author, book) =>
                     {
-                        Prices p;
-                        if (!priceDictionary.TryGetValue(price.Id, out p))
-                        {
-                            p = price;
-                            p.AuthorId = new List<Author>();
-                            p.BookId = new List<Book>();
-                            priceDictionary.Add(p.Id, p);
-                        }
+                        price.AuthorId = new List<Author> { author };
+                        price.BookId = new List<Book> { book };
+                        return price;
+                    },
+                    splitOn: "AuthorId,BookId"
+                );
 
-                        p.AuthorId.Add(author);
-                        p.BookId.Add(book);
-
-                        return p;
-                    });
                 dataGrid.ItemsSource = result;
             }
-        
-        
-        
             #endregion
-
         }
+
+
+        
     }
 }
